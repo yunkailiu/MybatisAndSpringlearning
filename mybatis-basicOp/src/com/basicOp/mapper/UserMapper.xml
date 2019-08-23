@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace表示命名空间，每一个命名空间代表着一个pojo的映射器 -->
+<mapper namespace="com.basicOp.mapper.UserMapper">
+	<!-- 定义resultMap 
+	将select id as id_,username as username_ from userheUser类中的属性进行映射
+	type:resultMap最终映射的java对象类型，可以使用别名
+	id:对resultMap的唯一标识
+	-->
+	<resultMap type="user" id="userResultMap">
+		<!-- id表示查询结果的唯一标识
+		column:查询出来的列名
+		property:type指定的pojo的类型中的属性名 -->
+		<id column="id_" property="id"/>
+		<!-- result表示对普通列的映射 -->
+		<result column="username_" property="username"/>
+	</resultMap>
+	
+	<!-- id:标识映射文件中的sql，sql语句封装到mappedStatement对象中，所以将id称为statement的id parameterType:指定输入参数的类型 
+		resultType:不管返回是单条还是多条记录，其指定的的单条sql输出结果所映射的java对象类型 #{}:表示占位符 -->
+	<select id="findUserById" parameterType="int" resultType="user">
+		select
+		* from user where id = #{id}
+	</select>
+
+	<select id="findUserByName" parameterType="string" resultType="user">
+		select * from user where username like concat('%',
+		#{username}, '%')
+	</select>
+
+	<!-- 信息综合查询 -->
+	<select id="findUserList" parameterType="com.basicOp.pojo.UserQueryVo"
+		resultType="com.basicOp.pojo.UserCustom">
+	<!-- select * from user where -->
+	<!-- user.sex = #{userCustom.sex} and -->
+	<!-- user.username like concat -->
+	<!-- ('%',#{userCustom.username},'%') -->
+	<!-- 使用动态sql 
+	其中的where属性可以自动去掉条件中的第一个and-->
+		select * from user
+		<where>
+			<if test="userCustom!=null">
+				<if test="userCustom.sex!=null and userCustom.sex!=''">
+					and user.sex = #{userCustom.sex}
+				</if>
+				<if test="userCustom.username!=null and userCustom.username!=''">
+					and user.username like concat('%',#{userCustom.username},'%')
+				</if>
+			</if>
+		</where>
+	</select>
+
+	<!-- hashmap的综合查询 -->
+	<select id="findUserMap" parameterType="hashmap" resultType="user">
+		select * from user where id = #{id} and username like
+		concat('%',#{username},'%')
+	</select>
+	
+	<!-- 使用resultMap进行输出映射 -->
+	<select id="findUserByIdMap" parameterType="int" resultMap="userResultMap">
+		select id as id_,username as username_ from user where id = #{id}
+	</select>
+
+	<!-- parameterType在插入时是对应的pojo对象类型 #{}里面是pojo的属性值，mybatis通过OGNL获取对象的属性值 -->
+	<insert id="insertUser" parameterType="user">
+		insert into user
+		(username,birthday,sex,address)
+		values
+		(#{username},#{birthday},#{sex},#{address})
+	</insert>
+
+	<delete id="deleteUser" parameterType="Integer">
+		delete from user where id
+		= #{id}
+	</delete>
+
+	<update id="updateUser" parameterType="user">
+		update user set
+		username=#{username},birthday=#{birthday},sex=#{sex},address=#{address}
+		where id=#{id}
+	</update>
+</mapper>
