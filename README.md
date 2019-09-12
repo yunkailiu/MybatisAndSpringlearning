@@ -5,5 +5,5 @@
 
 # spring_learning
 
-记录自己对spring的学习，并且包含了spring的学习资料，重点式最后的SSM整合，博客地址：[https://www.cnblogs.com/yunkaiL/p/11511812.html](https://www.cnblogs.com/yunkaiL/p/11511812.html "SSM整合")
+记录自己对spring的学习，并且包含了spring的学习资料，重点是最后的SSM整合，博客地址：[https://www.cnblogs.com/yunkaiL/p/11511812.html](https://www.cnblogs.com/yunkaiL/p/11511812.html "SSM整合")
 
